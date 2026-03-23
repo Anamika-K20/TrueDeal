@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+from scraper.utils import calculate_discount, clean_price
 
 def scrape_product(url):
     headers = {
@@ -27,11 +27,18 @@ def scrape_product(url):
 
         # Extract price (IMPORTANT)
         price = soup.find("span", {"class": "a-price-whole"})
-        product_price = price.text.strip() if price else "Price not found"
-
+        product_price = clean_price(price.text) if price else None
+        mrp_tag = soup.find("span", {"class": "a-price a-text-price"})
+        mrp = None
+        if mrp_tag:
+            mrp_text = mrp_tag.find("span", {"class": "a-offscreen"})
+            mrp = clean_price(mrp_text.text) if mrp_text else None
+        discount = calculate_discount(product_price, mrp)
         return {
             "name": product_name,
-            "price": product_price
+            "price": product_price,
+            "mrp": mrp,
+            "discount_percent": discount
         }
 
     except Exception as e:
