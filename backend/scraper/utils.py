@@ -17,5 +17,5 @@ def clean_price(text):
 
     try:
         return int(float(cleaned))
-    except:
+    except (ValueError, TypeError):
         return None

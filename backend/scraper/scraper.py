@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from scraper.utils import calculate_discount, clean_price
+try:
+    from scraper.utils import calculate_discount, clean_price
+except ImportError:
+    from utils import calculate_discount, clean_price
 
 def scrape_product(url):
     headers = {
