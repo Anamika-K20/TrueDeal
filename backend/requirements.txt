@@ -1,2 +1,1 @@
-requests
-beautifulsoup4
+# Python backend currently has no required third-party packages for scraping.
