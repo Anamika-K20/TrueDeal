@@ -6,8 +6,10 @@ from urllib.parse import urlparse
 
 try:
     from scraper.utils import calculate_discount, clean_price
+    from db.operations import get_or_create_product, insert_price
 except ImportError:
     from utils import calculate_discount, clean_price
+    from db.operations import get_or_create_product, insert_price
 
 AMAZON_BAGS_KEYWORDS = [
     "bag",
@@ -114,7 +116,13 @@ def scrape_product(url):
             product_mrp = None
 
         discount = calculate_discount(product_price, product_mrp)
+
+        # Persist to DB
+        product_id = get_or_create_product(product_name, url)
+        insert_price(product_id, product_price, product_mrp)
+
         return {
+            "product_id": product_id,
             "name": product_name,
             "price": product_price,
             "mrp": product_mrp,
