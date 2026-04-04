@@ -1,0 +1,12 @@
+{
+  "name": "truedeal-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Puppeteer scraper runtime for TrueDeal backend",
+  "scripts": {
+    "scrape": "node scraper/puppeteer_amazon.js"
+  },
+  "dependencies": {
+    "puppeteer": "^24.7.1"
+  }
+}

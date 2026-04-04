@@ -1,0 +1,59 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.card:hover { border-color: var(--accent-light); }
+
+.name {
+  font-size: 14px;
+  color: var(--text-h);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.price { font-size: 16px; font-weight: 700; color: var(--text-h); }
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.green  { background: rgba(34,197,94,0.15);  color: var(--green); }
+.yellow { background: rgba(234,179,8,0.15);  color: var(--yellow); }
+.red    { background: rgba(239,68,68,0.15);  color: var(--red); }
+
+.empty {
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+  padding: 32px 0;
+}
