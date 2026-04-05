@@ -19,10 +19,11 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS price_history (
         id SERIAL PRIMARY KEY,
-        product_id INTEGER REFERENCES products(id),
+        product_id INTEGER,
         price INTEGER,
         mrp INTEGER,
-        timestamp TIMESTAMPTZ DEFAULT NOW()
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(product_id) REFERENCES products(id)
     )
     """)
 

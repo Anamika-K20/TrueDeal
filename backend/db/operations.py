@@ -18,9 +18,9 @@ def get_or_create_product(name, url):
 
     cursor.execute(
         "INSERT INTO products (name, url) VALUES (%s, %s) RETURNING id",
-        (name, url)
+        (name, url),
     )
-    product_id = cursor.fetchone()["id"]
+    product_id = cursor.fetchone()[0]
     conn.commit()
     cursor.close()
     conn.close()
