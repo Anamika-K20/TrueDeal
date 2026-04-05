@@ -32,6 +32,16 @@ class ScrapeRequest(BaseModel):
     url: str
 
 
+@app.get("/")
+def root_health():
+    return {"status": "ok", "service": "TrueDeal API"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
 @app.post("/scrape")
 def scrape(req: ScrapeRequest):
     result = scrape_product(req.url)
