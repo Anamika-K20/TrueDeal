@@ -1,7 +1,12 @@
-import sqlite3
 import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "truedeal.db")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
 
 def get_connection():
-    return sqlite3.connect(DB_PATH)
+    return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
