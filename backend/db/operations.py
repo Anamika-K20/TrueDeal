@@ -9,15 +9,18 @@ def get_or_create_product(name, url):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM products WHERE url = ?", (url,))
+    cursor.execute("SELECT id FROM products WHERE url = %s", (url,))
     row = cursor.fetchone()
 
     if row:
         conn.close()
         return row[0]
 
-    cursor.execute("INSERT INTO products (name, url) VALUES (?, ?)", (name, url))
-    product_id = cursor.lastrowid
+    cursor.execute(
+        "INSERT INTO products (name, url) VALUES (%s, %s) RETURNING id",
+        (name, url),
+    )
+    product_id = cursor.fetchone()[0]
     conn.commit()
     conn.close()
     return product_id
@@ -28,7 +31,7 @@ def insert_price(product_id, price, mrp):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO price_history (product_id, price, mrp) VALUES (?, ?, ?)",
+        "INSERT INTO price_history (product_id, price, mrp) VALUES (%s, %s, %s)",
         (product_id, price, mrp),
     )
     conn.commit()
@@ -40,7 +43,7 @@ def get_price_history(product_id):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT price, mrp, timestamp FROM price_history WHERE product_id = ? ORDER BY timestamp DESC",
+        "SELECT price, mrp, timestamp FROM price_history WHERE product_id = %s ORDER BY timestamp DESC",
         (product_id,),
     )
     rows = cursor.fetchall()
