@@ -7,6 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs \
     npm \
+    sqlite3 \
+    libsqlite3-0 \
     ca-certificates \
     fonts-liberation \
     libasound2 \
@@ -40,7 +42,8 @@ COPY requirements.txt package.json package-lock.json ./
 
 RUN pip install --no-cache-dir -r requirements.txt \
     && npm ci \
-    && npx puppeteer browsers install chrome
+    && npx puppeteer browsers install chrome \
+    && python -c "import sqlite3; print('sqlite3-ok')"
 
 COPY . .
 
