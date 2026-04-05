@@ -12,7 +12,7 @@ def init_db():
     CREATE TABLE IF NOT EXISTS products (
         id SERIAL PRIMARY KEY,
         name TEXT,
-        url TEXT
+        url TEXT UNIQUE
     )
     """)
 
@@ -28,7 +28,9 @@ def init_db():
     """)
 
     conn.commit()
+    cursor.close()
     conn.close()
+
 
 if __name__ == "__main__":
     init_db()
