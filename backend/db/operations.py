@@ -20,7 +20,7 @@ def get_or_create_product(name, url):
         "INSERT INTO products (name, url) VALUES (%s, %s) RETURNING id",
         (name, url),
     )
-    product_id = cursor.fetchone()[0]
+    product_id = cursor.fetchone()["id"]
     conn.commit()
     cursor.close()
     conn.close()
