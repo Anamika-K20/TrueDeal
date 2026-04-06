@@ -14,7 +14,7 @@ export default function ProductGrid({ products, onSelect }) {
   const [analyses, setAnalyses] = useState({});
 
   useEffect(() => {
-    products.forEach((p) => {
+    products.slice(0, 20).forEach((p) => {
       fetchAnalysis(p.id)
         .then((a) => setAnalyses((prev) => ({ ...prev, [p.id]: a })))
         .catch(() => {});
