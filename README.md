@@ -47,12 +47,13 @@ cd backend
 pip install -r requirements.txt
 npm install
 npx puppeteer browsers install chrome
-export DATABASE_URL=postgresql://user:password@localhost:5432/truedeal
-uvicorn api.main:app --reload
+python -m uvicorn api.main:app --reload
 ```
 
 API runs at `http://localhost:8000`
 Interactive docs at `http://localhost:8000/docs`
+
+If `uvicorn` is not recognized on Windows, run the command above from the `backend` directory so Python can import `api.main`, or use the full interpreter path shown by your configured Python environment.
 
 ### Frontend
 

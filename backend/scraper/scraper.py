@@ -109,6 +109,9 @@ def scrape_product(url):
         product_price = _parse_price_value(extracted.get("price"))
         product_mrp = _parse_price_value(extracted.get("mrp"))
 
+        if product_price is None:
+            return {"error": "Could not parse product price from page"}
+
         if not _is_amazon_bags_payload(url, extracted):
             return {"error": "Only Amazon Bags category URLs are allowed"}
 

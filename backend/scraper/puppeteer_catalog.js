@@ -1,14 +1,14 @@
 /**
  * Crawls Amazon search results for a given query and returns product URLs.
- * Usage: node puppeteer_catalog.js "bags" 3
+ * Usage: node puppeteer_catalog.js "bags" 8
  *   arg1 = search query (default: "bags")
- *   arg2 = number of pages to crawl (default: 3)
+ *   arg2 = number of pages to crawl (default: 8)
  */
 
 const puppeteer = require("puppeteer");
 
 const SEARCH_QUERY = process.argv[2] || "bags";
-const PAGES = Math.min(parseInt(process.argv[3]) || 3, 10); // cap at 10 pages
+const PAGES = Math.min(parseInt(process.argv[3]) || 8, 25); // cap at 25 pages
 
 async function scrapeSearchPage(page, pageNum) {
   const url = `https://www.amazon.in/s?k=${encodeURIComponent(SEARCH_QUERY)}&page=${pageNum}`;

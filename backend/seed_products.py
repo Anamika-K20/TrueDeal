@@ -9,12 +9,12 @@ from scraper.scraper import scrape_product
 CATALOG_SCRIPT = Path(__file__).parent / "scraper" / "puppeteer_catalog.js"
 
 
-def discover_urls(query="bags", pages=3):
+def discover_urls(query="bags", pages=8):
     print("[seed] Discovering URLs for query={} pages={}".format(query, pages))
     try:
         result = subprocess.run(
             ["node", str(CATALOG_SCRIPT), query, str(pages)],
-            capture_output=True, text=True, timeout=120,
+            capture_output=True, text=True, timeout=600,
         )
     except FileNotFoundError:
         print("[seed] Error: Node.js not found")
@@ -43,7 +43,7 @@ def discover_urls(query="bags", pages=3):
     return urls
 
 
-def seed(query="bags", pages=3):
+def seed(query="bags", pages=8):
     init_db()
     urls = discover_urls(query, pages)
     if not urls:
@@ -66,5 +66,5 @@ def seed(query="bags", pages=3):
 
 if __name__ == "__main__":
     query = sys.argv[1] if len(sys.argv) > 1 else "bags"
-    pages = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    pages = int(sys.argv[2]) if len(sys.argv) > 2 else 8
     seed(query, pages)
