@@ -9,6 +9,7 @@ A price intelligence web app that tracks Amazon bag prices over time, analyzes h
 - Price history tracking with a chart showing price trends over time
 - Deal analysis: Great Deal / Good Deal / Fair / Average / Overpriced
 - Background scheduler re-scrapes all tracked products every 12 hours
+- Background scheduler auto-discovers new products daily
 - REST API with FastAPI + interactive docs at `/docs`
 - React (Vite) frontend with a product grid and price history chart
 
@@ -59,8 +60,17 @@ Auto-discover and scrape Amazon bag listings:
 
 ```bash
 cd backend
-python seed_products.py              # crawls "bags", 3 pages
+python seed_products.py              # crawls "bags", 20 pages
 python seed_products.py backpacks 5  # custom query and page count
+```
+
+Default seeding now uses 20 pages when page count is omitted.
+
+Optional scheduler env vars for permanent growth:
+
+```bash
+DISCOVERY_QUERY=bags
+DISCOVERY_PAGES=20
 ```
 
 ## API Endpoints

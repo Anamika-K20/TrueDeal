@@ -6,6 +6,34 @@ import PriceChart from "./components/PriceChart";
 import CategorySection from "./components/CategorySection";
 import styles from "./App.module.css";
 
+const BAG_KEYWORDS = [
+  "bag",
+  "bags",
+  "backpack",
+  "purse",
+  "wallet",
+  "luggage",
+  "handbag",
+  "satchel",
+  "tote",
+  "duffle",
+  "duffel",
+  "sling",
+  "rucksack",
+  "briefcase",
+  "messenger",
+  "trolley",
+  "crossbody",
+];
+
+const ELECTRONICS_KEYWORDS = ["laptop", "phone", "headphone", "tablet", "camera"];
+const CLOTHING_KEYWORDS = ["shirt", "pants", "dress", "shoes", "jacket"];
+const HOME_KEYWORDS = ["chair", "table", "lamp", "shelf", "bed"];
+
+function containsAnyKeyword(text, keywords) {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
 function getProductsByCategory(products) {
   const categories = {
     bags: [],
@@ -18,37 +46,13 @@ function getProductsByCategory(products) {
   products.forEach((product) => {
     const name = (product.name || "").toLowerCase();
 
-    if (
-      name.includes("bag") ||
-      name.includes("backpack") ||
-      name.includes("purse") ||
-      name.includes("wallet") ||
-      name.includes("luggage")
-    ) {
+    if (containsAnyKeyword(name, BAG_KEYWORDS)) {
       categories.bags.push(product);
-    } else if (
-      name.includes("laptop") ||
-      name.includes("phone") ||
-      name.includes("headphone") ||
-      name.includes("tablet") ||
-      name.includes("camera")
-    ) {
+    } else if (containsAnyKeyword(name, ELECTRONICS_KEYWORDS)) {
       categories.electronics.push(product);
-    } else if (
-      name.includes("shirt") ||
-      name.includes("pants") ||
-      name.includes("dress") ||
-      name.includes("shoes") ||
-      name.includes("jacket")
-    ) {
+    } else if (containsAnyKeyword(name, CLOTHING_KEYWORDS)) {
       categories.clothing.push(product);
-    } else if (
-      name.includes("chair") ||
-      name.includes("table") ||
-      name.includes("lamp") ||
-      name.includes("shelf") ||
-      name.includes("bed")
-    ) {
+    } else if (containsAnyKeyword(name, HOME_KEYWORDS)) {
       categories.home.push(product);
     } else {
       categories.other.push(product);
