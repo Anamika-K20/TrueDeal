@@ -13,7 +13,8 @@ async function run() {
   try {
     browser = await puppeteer.launch({
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
     });
 
     const page = await browser.newPage();
@@ -60,6 +61,17 @@ async function run() {
           const content = node ? node.getAttribute("content") : null;
           if (content && content.trim()) {
             return content.trim();
+          }
+        }
+        return null;
+      }
+
+      function srcFromSelectors(selectors) {
+        for (const selector of selectors) {
+          const node = document.querySelector(selector);
+          const src = node ? node.getAttribute("src") || node.getAttribute("data-old-hires") : null;
+          if (src && src.trim()) {
+            return src.trim();
           }
         }
         return null;

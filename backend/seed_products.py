@@ -1,49 +1,21 @@
-import json
-import subprocess
 import sys
-from pathlib import Path
 
 from db.init_db import init_db
 from scraper.scraper import scrape_product
+from scraper.catalog import discover_catalog_urls
 
-CATALOG_SCRIPT = Path(__file__).parent / "scraper" / "puppeteer_catalog.js"
 
-
-def discover_urls(query="bags", pages=3):
+def discover_urls(query="bags", pages=20):
     print("[seed] Discovering URLs for query={} pages={}".format(query, pages))
-    try:
-        result = subprocess.run(
-            ["node", str(CATALOG_SCRIPT), query, str(pages)],
-            capture_output=True, text=True, timeout=120,
-        )
-    except FileNotFoundError:
-        print("[seed] Error: Node.js not found")
+    urls, error = discover_catalog_urls(query=query, pages=pages)
+    if error:
+        print("[seed] Error: {}".format(error))
         return []
-    except subprocess.TimeoutExpired:
-        print("[seed] Error: timed out")
-        return []
-
-    stdout = (result.stdout or "").strip()
-    if not stdout:
-        print("[seed] No output: {}".format(result.stderr))
-        return []
-
-    try:
-        data = json.loads(stdout)
-    except json.JSONDecodeError:
-        print("[seed] Invalid JSON: {}".format(stdout))
-        return []
-
-    if "error" in data:
-        print("[seed] Error: {}".format(data["error"]))
-        return []
-
-    urls = data.get("urls", [])
     print("[seed] Found {} product URLs".format(len(urls)))
     return urls
 
 
-def seed(query="bags", pages=3):
+def seed(query="bags", pages=20):
     init_db()
     urls = discover_urls(query, pages)
     if not urls:
@@ -66,5 +38,5 @@ def seed(query="bags", pages=3):
 
 if __name__ == "__main__":
     query = sys.argv[1] if len(sys.argv) > 1 else "bags"
-    pages = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    pages = int(sys.argv[2]) if len(sys.argv) > 2 else 20
     seed(query, pages)

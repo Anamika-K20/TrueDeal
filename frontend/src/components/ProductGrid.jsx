@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { fetchAnalysis } from "../api";
 import styles from "./ProductGrid.module.css";
 
 const VERDICT_META = {
@@ -11,16 +9,6 @@ const VERDICT_META = {
 };
 
 export default function ProductGrid({ products, onSelect }) {
-  const [analyses, setAnalyses] = useState({});
-
-  useEffect(() => {
-    products.forEach((p) => {
-      fetchAnalysis(p.id)
-        .then((a) => setAnalyses((prev) => ({ ...prev, [p.id]: a })))
-        .catch(() => {});
-    });
-  }, [products]);
-
   if (!products.length) {
     return (
       <p className={styles.empty}>
@@ -32,15 +20,16 @@ export default function ProductGrid({ products, onSelect }) {
   return (
     <div className={styles.grid}>
       {products.map((p) => {
-        const analysis = analyses[p.id];
-        const meta = VERDICT_META[analysis?.verdict];
+        const meta = p.verdict ? VERDICT_META[p.verdict] : { label: "No History", color: "yellow" };
+        const priceValue = p.latest_price;
+
         return (
           <button key={p.id} className={styles.card} onClick={() => onSelect(p)}>
             <span className={styles.name}>{p.name}</span>
             <div className={styles.footer}>
-              {analysis && (
+              {priceValue != null && (
                 <span className={styles.price}>
-                  ₹{analysis.current_price?.toLocaleString()}
+                  ₹{priceValue.toLocaleString()}
                 </span>
               )}
               {meta && (
