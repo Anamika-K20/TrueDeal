@@ -24,7 +24,6 @@ def _get_verdict(current, lowest, avg):
 
 
 def get_or_create_product(name, url):
-    """Return existing product_id if URL already tracked, else insert and return new id."""
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -32,21 +31,22 @@ def get_or_create_product(name, url):
     row = cursor.fetchone()
 
     if row:
+        cursor.close()
         conn.close()
-        return row[0]
+        return row["id"]
 
     cursor.execute(
         "INSERT INTO products (name, url) VALUES (%s, %s) RETURNING id",
         (name, url),
     )
-    product_id = cursor.fetchone()[0]
+    product_id = cursor.fetchone()["id"]
     conn.commit()
+    cursor.close()
     conn.close()
     return product_id
 
 
 def insert_price(product_id, price, mrp):
-    """Insert a price snapshot for a product."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
@@ -54,11 +54,11 @@ def insert_price(product_id, price, mrp):
         (product_id, price, mrp),
     )
     conn.commit()
+    cursor.close()
     conn.close()
 
 
 def get_price_history(product_id):
-    """Return all price snapshots for a product, newest first."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
@@ -66,12 +66,12 @@ def get_price_history(product_id):
         (product_id,),
     )
     rows = cursor.fetchall()
+    cursor.close()
     conn.close()
-    return [{"price": r[0], "mrp": r[1], "timestamp": r[2]} for r in rows]
+    return [{"price": r["price"], "mrp": r["mrp"], "timestamp": str(r["timestamp"])} for r in rows]
 
 
 def get_all_products():
-    """Return all tracked products."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
@@ -94,6 +94,7 @@ def get_all_products():
         """
     )
     rows = cursor.fetchall()
+    cursor.close()
     conn.close()
 
     products = []

@@ -9,15 +9,17 @@ const VERDICT_META = {
 };
 
 export default function ProductCard({ product, analysis }) {
-  const meta = VERDICT_META[analysis?.verdict] ?? { label: "Unknown", color: "yellow" };
+  const meta = analysis ? (VERDICT_META[analysis.verdict] ?? { label: "Unknown", color: "yellow" }) : null;
 
   return (
     <div className={styles.card}>
       <div className={styles.header}>
         <h2 className={styles.name}>{product.name}</h2>
-        <span className={`${styles.badge} ${styles[meta.color]}`}>
-          {meta.label}
-        </span>
+        {meta && (
+          <span className={`${styles.badge} ${styles[meta.color]}`}>
+            {meta.label}
+          </span>
+        )}
       </div>
 
       <div className={styles.prices}>
