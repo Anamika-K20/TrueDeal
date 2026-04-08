@@ -66,6 +66,17 @@ async function run() {
         return null;
       }
 
+      function srcFromSelectors(selectors) {
+        for (const selector of selectors) {
+          const node = document.querySelector(selector);
+          const src = node ? node.getAttribute("src") || node.getAttribute("data-old-hires") : null;
+          if (src && src.trim()) {
+            return src.trim();
+          }
+        }
+        return null;
+      }
+
       function extractFromJsonLd() {
         const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
 
