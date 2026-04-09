@@ -99,14 +99,31 @@ def get_all_products():
 
     products = []
     for r in rows:
+        if isinstance(r, dict):
+            product_id = r.get("id")
+            name = r.get("name")
+            url = r.get("url")
+            latest_price = r.get("price")
+            latest_mrp = r.get("mrp")
+            lowest_price = r.get("lowest_price")
+            avg_price = r.get("avg_price")
+        else:
+            product_id = r[0]
+            name = r[1]
+            url = r[2]
+            latest_price = r[3]
+            latest_mrp = r[4]
+            lowest_price = r[5]
+            avg_price = r[6]
+
         products.append(
             {
-                "id": r[0],
-                "name": r[1],
-                "url": r[2],
-                "latest_price": r[3],
-                "latest_mrp": r[4],
-                "verdict": _get_verdict(r[3], r[5], r[6]),
+                "id": product_id,
+                "name": name,
+                "url": url,
+                "latest_price": latest_price,
+                "latest_mrp": latest_mrp,
+                "verdict": _get_verdict(latest_price, lowest_price, avg_price),
             }
         )
 

@@ -9,6 +9,12 @@ from scraper.scraper import scrape_product
 scheduler = BackgroundScheduler()
 
 
+def _is_truthy(value: str | None) -> bool:
+    if value is None:
+        return False
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
 def refresh_all_products():
     """Re-scrape every tracked product and record the latest price."""
     products = get_all_products()
@@ -63,22 +69,29 @@ def start_scheduler(interval_hours: int = 12):
         id="refresh_products",
         replace_existing=True,
     )
-    scheduler.add_job(
-        discover_new_products,
-        trigger="date",
-        run_date=datetime.now() + timedelta(seconds=5),
-        id="discover_products_startup",
-        replace_existing=True,
-    )
-    scheduler.add_job(
-        discover_new_products,
-        trigger="interval",
-        hours=24,
-        id="discover_products",
-        replace_existing=True,
-    )
+
+    discovery_enabled = _is_truthy(os.getenv("DISCOVERY_ENABLED", "false"))
+    if discovery_enabled:
+        scheduler.add_job(
+            discover_new_products,
+            trigger="date",
+            run_date=datetime.now() + timedelta(seconds=5),
+            id="discover_products_startup",
+            replace_existing=True,
+        )
+        scheduler.add_job(
+            discover_new_products,
+            trigger="interval",
+            hours=24,
+            id="discover_products",
+            replace_existing=True,
+        )
+
     scheduler.start()
-    print(f"[scheduler] Started — refreshing every {interval_hours}h, startup discovery in 5s, and daily discovery")
+    if discovery_enabled:
+        print(f"[scheduler] Started — refreshing every {interval_hours}h, startup discovery in 5s, and daily discovery")
+    else:
+        print(f"[scheduler] Started — refreshing every {interval_hours}h (discovery disabled; set DISCOVERY_ENABLED=true to enable)")
 
 
 def stop_scheduler():
