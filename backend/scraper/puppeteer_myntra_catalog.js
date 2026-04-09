@@ -35,22 +35,16 @@ async function scrapeCategory(page, category, maxPages) {
     const url = `https://www.myntra.com/${category}?p=${p}`;
     try {
       await page.goto(url, { waitUntil: "networkidle2", timeout: 45000 });
-      await page.waitForSelector(".product-base, .product-productMetaInfo", {
-        timeout: 10000,
-      }).catch(() => null);
+      // Scroll to trigger lazy loading
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+      await new Promise((r) => setTimeout(r, 2000));
 
       const pageUrls = await page.evaluate(() => {
-        const links = document.querySelectorAll("a.product-base, li.product-base a, .product-productMetaInfo a");
         const found = [];
-        links.forEach((a) => {
-          const href = a.getAttribute("href");
-          if (href && href.includes("/buy/")) {
-            found.push("https://www.myntra.com" + href);
+        document.querySelectorAll('a[href]').forEach((a) => {
+          if (a.href && a.href.match(/myntra\.com\/[^\/]+\/[^\/]+\/[^\/]+\/\d+\/buy/)) {
+            found.push(a.href);
           }
-        });
-        // Also try direct product card links
-        document.querySelectorAll('a[href*="/buy/"]').forEach((a) => {
-          found.push(a.href);
         });
         return [...new Set(found)];
       });
