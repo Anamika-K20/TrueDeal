@@ -77,14 +77,9 @@ Auto-discover and scrape Amazon bag listings into the DB:
 
 ```bash
 cd backend
-<<<<<<< HEAD
 python seed_products.py              # crawls "bags", 20 pages
 python seed_products.py backpacks 5  # custom query and page count
 =======
-export DATABASE_URL=your_postgres_url
-python3.11 seed_products.py              # crawls "bags", 3 pages
-python3.11 seed_products.py backpacks 5  # custom query and page count
->>>>>>> 151d2a6a95a7723b87aa1b6f8fa4dc647dc78ef1
 ```
 
 Default seeding now uses 20 pages when page count is omitted.
