@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrueDeal</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <span class="logo">TrueDeal</span>
+      <a href="https://true-deal.vercel.app" target="_blank" class="open-link">Open App ↗</a>
+    </header>
+
+    <div id="state-idle" class="state">
+      <p class="hint">Open an Amazon or Myntra product page, then click <strong>Check Deal</strong>.</p>
+      <button id="btn-check" class="btn-primary">Check Deal</button>
+    </div>
+
+    <div id="state-loading" class="state hidden">
+      <div class="spinner"></div>
+      <p class="hint">Checking deal...</p>
+    </div>
+
+    <div id="state-result" class="state hidden">
+      <div id="product-image-wrap" class="product-image-wrap hidden">
+        <img id="product-image" class="product-image" alt="" />
+      </div>
+      <div class="product-info">
+        <p id="product-name" class="product-name"></p>
+        <span id="verdict-badge" class="badge"></span>
+      </div>
+      <div class="prices">
+        <div class="price-block">
+          <span class="price-label">Price</span>
+          <span id="product-price" class="price-value"></span>
+        </div>
+        <div class="price-block" id="mrp-block">
+          <span class="price-label">MRP</span>
+          <span id="product-mrp" class="price-mrp"></span>
+        </div>
+        <div class="price-block" id="discount-block">
+          <span class="price-label">Off</span>
+          <span id="product-discount" class="price-discount"></span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-label">Lowest Ever</span>
+          <span id="stat-lowest" class="stat-value"></span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Average</span>
+          <span id="stat-avg" class="stat-value"></span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Tracked</span>
+          <span id="stat-points" class="stat-value"></span>
+        </div>
+      </div>
+      <p id="verdict-reason" class="reason"></p>
+      <a id="view-link" href="#" target="_blank" class="btn-secondary">View on site ↗</a>
+      <button id="btn-recheck" class="btn-ghost">Check another</button>
+    </div>
+
+    <div id="state-error" class="state hidden">
+      <p id="error-msg" class="error-msg"></p>
+      <button id="btn-retry" class="btn-ghost">Try again</button>
+    </div>
+
+    <div id="state-unsupported" class="state hidden">
+      <p class="hint">Navigate to an <strong>Amazon</strong> or <strong>Myntra</strong> product page to check a deal.</p>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

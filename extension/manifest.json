@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "TrueDeal",
+  "version": "1.0.0",
+  "description": "Check if it's actually a good deal on Amazon or Myntra.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://www.amazon.in/*",
+    "https://www.myntra.com/*",
+    "https://truedeal-production.up.railway.app/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.amazon.in/*", "https://www.myntra.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
