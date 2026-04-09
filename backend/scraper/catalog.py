@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 CATALOG_SCRIPT = Path(__file__).with_name("puppeteer_catalog.js")
+MYNTRA_CATALOG_SCRIPT = Path(__file__).with_name("puppeteer_myntra_catalog.js")
 
 
 def discover_catalog_urls(query="bags", pages=20):
@@ -35,6 +36,38 @@ def discover_catalog_urls(query="bags", pages=20):
         return [], str(payload["error"])
 
     urls = payload.get("urls", [])
-    # Preserve order while deduplicating.
+    unique_urls = list(dict.fromkeys(urls))
+    return unique_urls, None
+
+
+def discover_myntra_urls(pages=5):
+    """Return deduplicated product URLs from Myntra bags categories."""
+    try:
+        result = subprocess.run(
+            ["node", str(MYNTRA_CATALOG_SCRIPT), str(pages)],
+            capture_output=True,
+            text=True,
+            timeout=600,
+            check=False,
+        )
+    except FileNotFoundError:
+        return [], "Node.js not found"
+    except subprocess.TimeoutExpired:
+        return [], "Myntra catalog crawl timed out"
+
+    stdout = (result.stdout or "").strip()
+    stderr = (result.stderr or "").strip()
+    if not stdout:
+        return [], (stderr or "No catalog output")
+
+    try:
+        payload = json.loads(stdout)
+    except json.JSONDecodeError:
+        return [], "Invalid catalog JSON"
+
+    if "error" in payload:
+        return [], str(payload["error"])
+
+    urls = payload.get("urls", [])
     unique_urls = list(dict.fromkeys(urls))
     return unique_urls, None
