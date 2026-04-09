@@ -10,33 +10,37 @@ const VERDICT_META = {
 
 export default function ProductGrid({ products, onSelect }) {
   if (!products.length) {
-    return (
-      <p className={styles.empty}>
-        No products tracked yet. Paste an Amazon URL above to get started.
-      </p>
-    );
+    return <p className={styles.empty}>No products tracked yet.</p>;
   }
 
   return (
     <div className={styles.grid}>
       {products.map((p) => {
-        const meta = p.verdict ? VERDICT_META[p.verdict] : { label: "No History", color: "yellow" };
-        const priceValue = p.latest_price;
-
+        const meta = p.verdict ? VERDICT_META[p.verdict] : null;
         return (
           <button key={p.id} className={styles.card} onClick={() => onSelect(p)}>
-            <span className={styles.name}>{p.name}</span>
-            <div className={styles.footer}>
-              {priceValue != null && (
-                <span className={styles.price}>
-                  ₹{priceValue.toLocaleString()}
-                </span>
+            <div className={styles.imageWrap}>
+              {p.image_url ? (
+                <img src={p.image_url} alt={p.name} className={styles.image} loading="lazy" />
+              ) : (
+                <div className={styles.imagePlaceholder}>👜</div>
               )}
               {meta && (
                 <span className={`${styles.badge} ${styles[meta.color]}`}>
                   {meta.label}
                 </span>
               )}
+            </div>
+            <div className={styles.info}>
+              <span className={styles.name}>{p.name}</span>
+              <div className={styles.footer}>
+                {p.latest_price != null && (
+                  <span className={styles.price}>₹{p.latest_price.toLocaleString()}</span>
+                )}
+                {p.latest_mrp != null && p.latest_mrp > p.latest_price && (
+                  <span className={styles.mrp}>₹{p.latest_mrp.toLocaleString()}</span>
+                )}
+              </div>
             </div>
           </button>
         );
