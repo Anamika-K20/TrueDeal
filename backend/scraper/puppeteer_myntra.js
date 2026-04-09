@@ -77,12 +77,20 @@ async function run() {
         .filter(Boolean)
         .join(" ");
 
+      // Product image
+      const image =
+        document.querySelector('img.image-grid-image')?.getAttribute("src") ||
+        document.querySelector('img[class*="image-grid"]')?.getAttribute("src") ||
+        document.querySelector('meta[property="og:image"]')?.getAttribute("content") ||
+        null;
+
       return {
         url: window.location.href,
         name,
         price,
         mrp,
         breadcrumb,
+        image,
       };
     });
 

@@ -111,7 +111,8 @@ def scrape_product(url):
 
         discount = calculate_discount(product_price, product_mrp)
 
-        product_id = get_or_create_product(product_name, url)
+        image_url = extracted.get("image") or None
+        product_id = get_or_create_product(product_name, url, image_url)
         insert_price(product_id, product_price, product_mrp)
 
         return {
@@ -120,6 +121,7 @@ def scrape_product(url):
             "price": product_price,
             "mrp": product_mrp,
             "discount_percent": discount,
+            "image_url": image_url,
             "source": "myntra" if _is_myntra_domain(domain) else "amazon",
         }
 

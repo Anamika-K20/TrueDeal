@@ -184,6 +184,14 @@ async function run() {
 
       const ld = extractFromJsonLd();
 
+      const image =
+        srcFromSelectors([
+          "#landingImage",
+          "#imgBlkFront",
+          'img[data-old-hires]',
+        ]) ||
+        contentFromMeta(['meta[property="og:image"]']);
+
       return {
         url: window.location.href,
         title,
@@ -191,6 +199,7 @@ async function run() {
         name: name || ld.name,
         price: price != null ? price : ld.price,
         mrp: mrp != null ? mrp : ld.mrp,
+        image,
       };
     });
 

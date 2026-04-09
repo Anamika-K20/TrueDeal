@@ -12,7 +12,8 @@ def init_db():
     CREATE TABLE IF NOT EXISTS products (
         id SERIAL PRIMARY KEY,
         name TEXT,
-        url TEXT UNIQUE
+        url TEXT UNIQUE,
+        image_url TEXT
     )
     """)
 

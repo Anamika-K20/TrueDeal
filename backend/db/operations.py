@@ -23,7 +23,7 @@ def _get_verdict(current, lowest, avg):
     return "overpriced"
 
 
-def get_or_create_product(name, url):
+def get_or_create_product(name, url, image_url=None):
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -31,13 +31,20 @@ def get_or_create_product(name, url):
     row = cursor.fetchone()
 
     if row:
+        # Update image_url if we now have one
+        if image_url:
+            cursor.execute(
+                "UPDATE products SET image_url = %s WHERE id = %s",
+                (image_url, row["id"]),
+            )
+            conn.commit()
         cursor.close()
         conn.close()
         return row["id"]
 
     cursor.execute(
-        "INSERT INTO products (name, url) VALUES (%s, %s) RETURNING id",
-        (name, url),
+        "INSERT INTO products (name, url, image_url) VALUES (%s, %s, %s) RETURNING id",
+        (name, url, image_url),
     )
     product_id = cursor.fetchone()["id"]
     conn.commit()
@@ -76,7 +83,7 @@ def get_all_products():
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT p.id, p.name, p.url, ph.price, ph.mrp, stats.lowest_price, stats.avg_price
+        SELECT p.id, p.name, p.url, p.image_url, ph.price, ph.mrp, stats.lowest_price, stats.avg_price
         FROM products p
         LEFT JOIN LATERAL (
             SELECT price, mrp
@@ -103,6 +110,7 @@ def get_all_products():
             product_id = r.get("id")
             name = r.get("name")
             url = r.get("url")
+            image_url = r.get("image_url")
             latest_price = r.get("price")
             latest_mrp = r.get("mrp")
             lowest_price = r.get("lowest_price")
@@ -111,16 +119,18 @@ def get_all_products():
             product_id = r[0]
             name = r[1]
             url = r[2]
-            latest_price = r[3]
-            latest_mrp = r[4]
-            lowest_price = r[5]
-            avg_price = r[6]
+            image_url = r[3]
+            latest_price = r[4]
+            latest_mrp = r[5]
+            lowest_price = r[6]
+            avg_price = r[7]
 
         products.append(
             {
                 "id": product_id,
                 "name": name,
                 "url": url,
+                "image_url": image_url,
                 "latest_price": latest_price,
                 "latest_mrp": latest_mrp,
                 "verdict": _get_verdict(latest_price, lowest_price, avg_price),
